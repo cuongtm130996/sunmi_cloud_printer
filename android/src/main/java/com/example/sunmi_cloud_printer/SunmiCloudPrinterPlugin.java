@@ -54,7 +54,8 @@ public class SunmiCloudPrinterPlugin implements FlutterPlugin, MethodCallHandler
             }
             case "SET_BT_PRINTER" -> {
                 try {
-                    sunmiCloudPrinterMethod.setBTPrinter();
+                    boolean isSetted = sunmiCloudPrinterMethod.setBTPrinter();
+                    result.success(isSetted);
                 } catch (Exception ignored) {
                     result.success(false);
                     break;
