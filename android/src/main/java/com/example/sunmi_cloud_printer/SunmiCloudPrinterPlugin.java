@@ -192,14 +192,37 @@ public class SunmiCloudPrinterPlugin implements FlutterPlugin, MethodCallHandler
                 result.success(true);
             }
             case "PRINT_IMAGE" -> {
-                byte[] bytes = call.argument("bitmap");
-                int mode = call.argument("mode");
+                Object bitmapArg = call.argument("bitmap");
+
+                if (bitmapArg == null) {
+                    result.success(false);
+                    return;
+                }
+                
+                // Convert Object sang byte[]
+                byte[] bytes;
+                if (bitmapArg instanceof byte[]) {
+                    bytes = (byte[]) bitmapArg;
+                } else if (bitmapArg instanceof List) {
+                    // Flutter có thể gửi List<int>
+                    List<Integer> intList = (List<Integer>) bitmapArg;
+                    bytes = new byte[intList.size()];
+                    for (int i = 0; i < intList.size(); i++) {
+                        bytes[i] = intList.get(i).byteValue();
+                    }
+                } else {
+                    result.success(false);
+                    return;
+                }
+                
+                // Decode bitmap
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 try {
-                    sunmiCloudPrinterMethod.printBitmap(bitmap, mode);
-                } catch (Exception ignored) {
+                    sunmiCloudPrinterMethod.printBitmap(bitmap, 0);
+                } catch (Exception e) {
+                    e.printStackTrace();
                     result.success(false);
-                    break;
+                    return;
                 }
                 result.success(true);
             }
