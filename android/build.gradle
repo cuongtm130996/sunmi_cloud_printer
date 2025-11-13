@@ -6,6 +6,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://repo.sunmi.com/repository/maven-releases/' }
     }
 
     dependencies {
