@@ -6,7 +6,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://repo.sunmi.com/repository/maven-releases/' }
     }
 
     dependencies {
@@ -38,6 +37,6 @@ android {
     }
 }
 dependencies {
-    implementation 'com.sunmi:external-printerlibrary:1.0.24'
+    implementation 'com.sunmi:external-printerlibrary:1.0.12'
 }
 
