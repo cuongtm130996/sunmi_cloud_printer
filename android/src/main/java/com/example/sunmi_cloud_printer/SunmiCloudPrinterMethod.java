@@ -9,6 +9,7 @@ import com.sunmi.externalprinterlibrary.api.ConnectCallback;
 import com.sunmi.externalprinterlibrary.api.PrinterException;
 import com.sunmi.externalprinterlibrary.api.SunmiPrinter;
 import com.sunmi.externalprinterlibrary.api.SunmiPrinterApi;
+import java.util.concurrent.CountDownLatch;
 
 import java.util.List;
 
