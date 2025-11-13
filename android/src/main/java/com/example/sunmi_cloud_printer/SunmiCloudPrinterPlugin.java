@@ -64,7 +64,8 @@ public class SunmiCloudPrinterPlugin implements FlutterPlugin, MethodCallHandler
             }
             case "CONNECT" -> {
                 try {
-                    sunmiCloudPrinterMethod.connect();
+                    boolean isConnected = sunmiCloudPrinterMethod.connect();
+                    result.success(isConnected);
                 } catch (Exception ignored) {
                     result.success(false);
                     break;
