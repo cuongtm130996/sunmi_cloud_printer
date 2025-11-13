@@ -82,62 +82,63 @@ public class SunmiCloudPrinterMethod {
      *
      * @throws PrinterException the printer exception
      */
-    public void connect() throws PrinterException {
+    public boolean connect() {
         System.out.println("Connection...");
-        if (!SunmiPrinterApi.getInstance().isConnected()) {
-            TaskProvider.runFunctionWithException(
-                    () -> SunmiPrinterApi.getInstance().connectPrinter(_context, new ConnectCallback() {
-                        @Override
-                        public void onFound() {
-                            System.out.println("onFound");
-                            Toast.makeText(
-                                    _context,
-                                    "Sunmi Printer Found",
-                                    Toast.LENGTH_LONG
-                            ).show();
-
-                        }
-
-                        @Override
-                        public void onUnfound() {
-                            System.out.println("onUnfound");
-                            Toast.makeText(
-                                    _context,
-                                    "Sunmi Printer Unfound",
-                                    Toast.LENGTH_LONG
-                            ).show();
-                        }
-
-                        @Override
-                        public void onConnect() {
-                            System.out.println("onConnect");
-                            Toast.makeText(
-                                    _context,
-                                    "Sunmi Printer Connected",
-                                    Toast.LENGTH_LONG
-                            ).show();
-                        }
-
-                        @Override
-                        public void onDisconnect() {
-                            System.out.println("onDisconnect");
-                            Toast.makeText(
-                                    _context,
-                                    "Sunmi Printer Disconnected",
-                                    Toast.LENGTH_LONG
-                            ).show();
-                        }
-
-                    })
-            );
-        } else {
+    
+        // Nếu đã kết nối rồi
+        if (SunmiPrinterApi.getInstance().isConnected()) {
             System.out.println("Already connected");
-            Toast.makeText(
-                    _context,
-                    "Already connected",
-                    Toast.LENGTH_LONG
-            ).show();
+            Toast.makeText(_context, "Already connected", Toast.LENGTH_LONG).show();
+            return true;
         }
+    
+        final boolean[] result = {false};
+        final CountDownLatch latch = new CountDownLatch(1);
+    
+        try {
+            TaskProvider.runFunctionWithException(() ->
+                SunmiPrinterApi.getInstance().connectPrinter(_context, new ConnectCallback() {
+                    @Override
+                    public void onFound() {
+                        System.out.println("onFound");
+                        Toast.makeText(_context, "Sunmi Printer Found", Toast.LENGTH_LONG).show();
+                    }
+    
+                    @Override
+                    public void onUnfound() {
+                        System.out.println("onUnfound");
+                        Toast.makeText(_context, "Sunmi Printer Unfound", Toast.LENGTH_LONG).show();
+                        result[0] = false;
+                        latch.countDown();
+                    }
+    
+                    @Override
+                    public void onConnect() {
+                        System.out.println("onConnect");
+                        Toast.makeText(_context, "Sunmi Printer Connected", Toast.LENGTH_LONG).show();
+                        result[0] = true;
+                        latch.countDown();
+                    }
+    
+                    @Override
+                    public void onDisconnect() {
+                        System.out.println("onDisconnect");
+                        Toast.makeText(_context, "Sunmi Printer Disconnected", Toast.LENGTH_LONG).show();
+                        result[0] = false;
+                        latch.countDown();
+                    }
+                })
+            );
+    
+            // Chờ callback xong
+            latch.await(); // sẽ block thread hiện tại cho đến khi onConnect/onUnfound/onDisconnect gọi countDown
+    
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    
+        return result[0];
     }
 
     /**
