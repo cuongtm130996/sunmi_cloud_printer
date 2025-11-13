@@ -37,6 +37,6 @@ android {
     }
 }
 dependencies {
-    implementation 'com.sunmi:external-printerlibrary:1.0.12'
+    implementation 'com.sunmi:external-printerlibrary:1.0.24'
 }
 
