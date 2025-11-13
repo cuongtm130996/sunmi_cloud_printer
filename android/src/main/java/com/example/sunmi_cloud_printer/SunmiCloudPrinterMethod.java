@@ -86,11 +86,15 @@ public class SunmiCloudPrinterMethod {
     public boolean connect() {
         System.out.println("Connection...");
     
-        // Nếu đã kết nối rồi
-        if (SunmiPrinterApi.getInstance().isConnected()) {
-            System.out.println("Already connected");
-            Toast.makeText(_context, "Already connected", Toast.LENGTH_LONG).show();
-            return true;
+        try {
+            if (SunmiPrinterApi.getInstance().isConnected()) {
+                System.out.println("Already connected");
+                Toast.makeText(_context, "Already connected", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        } catch (PrinterException e) {
+            e.printStackTrace();
+            return false; // Không thể kiểm tra kết nối → coi như thất bại
         }
     
         final boolean[] result = {false};
@@ -132,7 +136,7 @@ public class SunmiCloudPrinterMethod {
             );
     
             // Chờ callback xong
-            latch.await(); // sẽ block thread hiện tại cho đến khi onConnect/onUnfound/onDisconnect gọi countDown
+            latch.await();
     
         } catch (Exception e) {
             e.printStackTrace();
