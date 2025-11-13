@@ -44,13 +44,24 @@ public class SunmiCloudPrinterMethod {
      *
      * @throws PrinterException the printer exception
      */
-    public void setBTPrinter() throws PrinterException {
+    public boolean setBTPrinter() throws PrinterException {
         List<String> macList = SunmiPrinterApi.getInstance().findBleDevice(_context);
-        if (macList.size() > 0) {
-            TaskProvider.runFunctionWithException(
-                    () -> SunmiPrinterApi.getInstance().setPrinter(SunmiPrinter.SunmiBlueToothPrinter, macList.get(0))
+    
+        if (macList == null || macList.isEmpty()) {
+            return false;
+        }
+    
+        try {
+            TaskProvider.runFunctionWithException(() ->
+                SunmiPrinterApi.getInstance().setPrinter(
+                    SunmiPrinter.SunmiBlueToothPrinter,
+                    macList.get(0)
+                )
             );
-
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
