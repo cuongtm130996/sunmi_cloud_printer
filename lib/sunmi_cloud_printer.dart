@@ -25,17 +25,20 @@ class SunmiCloudPrinter {
 
   static const MethodChannel _channel = MethodChannel('sunmi_cloud_printer');
 
-  static Future<void> setNetPrinter(String ip) async {
+  static Future<bool?> setNetPrinter(String ip) async {
     Map<String, dynamic> arguments = <String, dynamic>{"ip": ip};
-    await _channel.invokeMethod('SET_NET_PRINTER', arguments);
+    final bool? status = await _channel.invokeMethod('SET_NET_PRINTER', arguments);
+    return status;
   }
 
-  static Future<void> setBTPrinter(String ip) async {
-    await _channel.invokeMethod('SET_BT_PRINTER');
+  static Future<bool?> setBTPrinter() async {
+    final bool? status = await _channel.invokeMethod('SET_BT_PRINTER');
+    return status;
   }
 
-  static Future<void> connect() async {
-    await _channel.invokeMethod('CONNECT');
+  static Future<bool?> connect() async {
+    final bool? status = await _channel.invokeMethod('CONNECT');
+    return status;
   }
 
   static Future<bool?> initPrinter() async {
